@@ -1,0 +1,44 @@
+{
+  "name": "agenda-free",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Agenda funcional para um profissional, com site público, dashboard e persistência.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env.local scripts/server.mjs dev",
+    "build": "next build",
+    "start": "node --env-file-if-exists=.env.local scripts/server.mjs start",
+    "setup": "node --env-file-if-exists=.env.local scripts/setup.mts",
+    "db:migrate": "node --env-file-if-exists=.env.local scripts/migrate.mts",
+    "password:reset": "node --env-file-if-exists=.env.local scripts/reset.mts",
+    "backup": "node --env-file-if-exists=.env.local scripts/backup.mts",
+    "data:export": "node --env-file-if-exists=.env.local scripts/export.mts",
+    "test:postgres": "node --env-file-if-exists=.env.local scripts/test-postgres.mts",
+    "format": "prettier --write src scripts tests *.json *.ts",
+    "format:check": "prettier --check src scripts tests *.json *.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run format:check && npm run typecheck && npm test",
+    "test:e2e": "playwright test",
+    "pack:product": "node scripts/package.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/pg": "^8",
+    "@playwright/test": "1.64.0",
+    "prettier": "3.6.2"
+  }
+}
