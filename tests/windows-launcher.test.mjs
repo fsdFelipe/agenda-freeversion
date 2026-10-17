@@ -11,15 +11,19 @@ const powershell = windows
       "System32/WindowsPowerShell/v1.0/powershell.exe",
     )
   : "";
-test("CMD launchers preserve quoted paths, visible diagnostics and exit codes", async () => {
+test("CMD launchers hide the console, preserve quoted paths and report failures", async () => {
   for (const file of ["Iniciar Agenda.cmd", "Parar Agenda.cmd"]) {
     const text = await readFile(file, "utf8");
     assert.match(text, /DisableDelayedExpansion/);
     assert.match(text, /%~dp0/);
     assert.match(text, /if not exist "%SCRIPT%"/);
-    assert.match(text, /-STA -ExecutionPolicy Bypass -File "%SCRIPT%"/);
+    assert.match(
+      text,
+      /-STA -WindowStyle Hidden -ExecutionPolicy Bypass -File "%SCRIPT%"/,
+    );
     assert.ok(text.includes("exit /b %EXIT_CODE%"));
-    assert.doesNotMatch(text, /WindowStyle Hidden|wscript|cscript|RunAs/i);
+    assert.match(text, /if not defined CI.*-WindowStyle Normal/);
+    assert.doesNotMatch(text, /wscript|cscript|RunAs/i);
   }
 });
 

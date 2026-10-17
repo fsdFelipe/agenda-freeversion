@@ -71,7 +71,7 @@ MIT: permite estudar, modificar, utilizar comercialmente e redistribuir a base, 
 
 Use npm run format para aplicar o padrão e npm run check para validar antes de enviar ao GitHub. Código e configuração usam LF por .gitattributes, inclusive em checkouts Windows; scripts nativos usam CRLF. Preserve .prettierrc.json, .prettierignore e .editorconfig no repositório e no pacote distribuído. Arquivos gerados pelo Next.js não são formatados manualmente.
 
-Os atalhos .cmd abrem a interface pelo Windows PowerShell em modo STA, sem VBScript. O console permanece visível para diagnóstico e erros não encerram a janela imediatamente. Consulte o guia de instalação e segurança do manual separado.
+Os atalhos .cmd abrem a interface pelo Windows PowerShell em modo STA, sem VBScript. O console fica oculto durante o uso normal e reaparece em caso de falha, sem fechar imediatamente. Consulte o guia de instalação e segurança do manual separado.
 
 ### Cache Components
 
@@ -89,7 +89,7 @@ APIs compatíveis com Cache Components: GET aguarda uma requisição antes de ac
 
 ## Instalação e confiança
 
-A instalação gráfica e a alternativa por comandos estão descritas acima. Os atalhos .cmd dispensam VBScript e deixam o console visível para diagnóstico. Não execute como administrador nem desative proteções do Windows para instalar. Confira o arquivo baixado com o hash exibido pela plataforma para esse mesmo download. O manual separado contém instalacao-seguranca-e-integridade.md, apresentacao-do-produto.md e o checklist de aceite da interface.
+A instalação gráfica e a alternativa por comandos estão descritas acima. Os atalhos .cmd dispensam VBScript e ocultam o console durante o uso normal e o reabrem para informar falhas. Não execute como administrador nem desative proteções do Windows para instalar. Confira o arquivo baixado com o hash exibido pela plataforma para esse mesmo download. O manual separado contém instalacao-seguranca-e-integridade.md, apresentacao-do-produto.md e o checklist de aceite da interface.
 
 ## Por que não há installer/
 

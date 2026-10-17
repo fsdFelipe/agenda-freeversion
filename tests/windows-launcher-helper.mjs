@@ -47,7 +47,7 @@ export function registerLauncherChecks(entries) {
         await writeFile(
           target,
           `param([switch]$StopServer)
-@{ stop = [bool]$StopServer; sta = ([Threading.Thread]::CurrentThread.ApartmentState -eq 'STA'); script = $PSCommandPath } | ConvertTo-Json | Set-Content -LiteralPath $env:LAUNCHER_TEST_RECORD -Encoding UTF8
+@{ stop = [bool]$StopServer; hidden = ([Environment]::GetCommandLineArgs() -contains 'Hidden'); sta = ([Threading.Thread]::CurrentThread.ApartmentState -eq 'STA'); script = $PSCommandPath } | ConvertTo-Json | Set-Content -LiteralPath $env:LAUNCHER_TEST_RECORD -Encoding UTF8
 if ($env:LAUNCHER_TEST_EXIT) { exit ([int]$env:LAUNCHER_TEST_EXIT) }
 exit 0
 `,
@@ -62,6 +62,7 @@ exit 0
           (await readFile(record, "utf8")).replace(/^\uFEFF/, ""),
         );
         assert.equal(data.sta, true);
+        assert.equal(data.hidden, true);
         assert.equal(data.stop, args === "-StopServer");
         assert.equal(data.script.toLowerCase(), target.toLowerCase());
         const failure = run(name, { LAUNCHER_TEST_EXIT: "7" });

@@ -15,9 +15,10 @@ if not exist "%POWERSHELL%" (
 )
 echo Abrindo Iniciar Agenda. Aguarde a interface grafica.
 echo Esta janela mostra mensagens de inicializacao e erros.
-"%POWERSHELL%" -NoLogo -NoProfile -STA -ExecutionPolicy Bypass -File "%SCRIPT%"
+"%POWERSHELL%" -NoLogo -NoProfile -STA -WindowStyle Hidden -ExecutionPolicy Bypass -File "%SCRIPT%"
 set "EXIT_CODE=%ERRORLEVEL%"
 if not "%EXIT_CODE%"=="0" (
+  if not defined CI "%POWERSHELL%" -NoLogo -NoProfile -WindowStyle Normal -Command "exit 0"
   echo ERRO: a operacao nao foi concluida. Codigo: %EXIT_CODE%.
   echo Confira a mensagem acima e o guia de instalacao do produto.
   if not defined CI pause
