@@ -1,13 +1,35 @@
 import { test, expect, type Page } from "@playwright/test";
 import { addDays } from "../../src/modules/agenda/policy.ts";
 test.describe.configure({ mode: "serial" });
+async function submitLogin(page: Page) {
+  const [response, dashboard] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        new URL(response.url()).pathname === "/api/agenda" &&
+        response.request().postDataJSON()?.action === "login",
+      { timeout: 30000 },
+    ),
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        new URL(response.url()).pathname === "/api/agenda" &&
+        new URL(response.url()).searchParams.get("view") === "admin",
+      { timeout: 30000 },
+    ),
+    page.getByRole("button", { name: "Entrar ↗", exact: true }).click(),
+  ]);
+  expect(response.status()).toBe(200);
+  expect(dashboard.status()).toBe(200);
+  await page.waitForURL("**/dashboard", { timeout: 30000 });
+}
 async function login(page: Page) {
   await page.goto("/entrar");
   await page.getByLabel("E-mail do administrador").fill("owner@example.com");
   await page
     .getByLabel("Senha", { exact: true })
     .fill(process.env.AGENDA_TEST_PASSWORD!);
-  await page.getByRole("button", { name: "Entrar ↗", exact: true }).click();
+  await submitLogin(page);
   await expect(
     page.getByRole("heading", { name: "Seu dia, em ordem." }),
   ).toBeVisible();

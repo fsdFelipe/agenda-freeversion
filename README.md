@@ -72,3 +72,7 @@ MIT: permite estudar, modificar, utilizar comercialmente e redistribuir a base, 
 Use npm run format para aplicar o padrão e npm run check para validar antes de enviar ao GitHub. Código e configuração usam LF por .gitattributes, inclusive em checkouts Windows; scripts nativos usam CRLF. Preserve .prettierrc.json, .prettierignore e .editorconfig no repositório e no pacote distribuído. Arquivos gerados pelo Next.js não são formatados manualmente.
 
 Os atalhos Windows seguem o mecanismo do Module FAQ e exibem falhas de inicialização. Extraia o ZIP inteiro antes de abri-los. Os testes incluem abertura nativa no Windows PowerShell 5.1; no Module Ads, também verificam e instalam em um aplicativo isolado.
+
+### Cache Components
+
+APIs compatíveis com Cache Components: GET aguarda uma requisição antes de acessar o backend. Verifique com `npm run test:cache-components` (pare o servidor antes). Consulte o manual separado `compatibilidade-cache-components.md` para atualizar uma instalação existente.

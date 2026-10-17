@@ -1,5 +1,7 @@
+import { connection } from "next/server";
 import { handleAgenda } from "../../../modules/agenda/runtime";
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const GET = handleAgenda;
+export async function GET(request: Request) {
+  await connection();
+  return handleAgenda(request);
+}
 export const POST = handleAgenda;
