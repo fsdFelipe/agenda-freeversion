@@ -12,6 +12,23 @@ async function login(page: Page) {
     page.getByRole("heading", { name: "Seu dia, em ordem." }),
   ).toBeVisible();
 }
+async function confirmBooking(page: Page) {
+  const responseFor = (action: string) =>
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        new URL(response.url()).pathname === "/api/agenda" &&
+        response.request().postDataJSON()?.action === action,
+      { timeout: 30000 },
+    );
+  const [reservation, details] = await Promise.all([
+    responseFor("reserve"),
+    responseFor("lookup"),
+    page.getByRole("button", { name: "Confirmar meu horário" }).click(),
+  ]);
+  expect(reservation.status()).toBe(200);
+  expect(details.status()).toBe(200);
+}
 async function nextWorkingDay(page: Page, offset = 1) {
   const info = await (await page.request.get("/api/agenda?view=public")).json();
   let day = addDays(info.today, offset);
@@ -42,7 +59,17 @@ test("first-run configuration and service publishing through dashboard", async (
   await page
     .getByLabel("Repetir senha")
     .fill(process.env.AGENDA_TEST_PASSWORD!);
-  await page.getByRole("button", { name: "Criar minha agenda" }).click();
+  const [configured] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        new URL(response.url()).pathname === "/api/agenda" &&
+        response.request().postDataJSON()?.action === "setup",
+      { timeout: 30000 },
+    ),
+    page.getByRole("button", { name: "Criar minha agenda" }).click(),
+  ]);
+  expect(configured.status(), await configured.text()).toBe(200);
   await expect(page.getByRole("status")).toContainText("Sua agenda foi criada");
   await login(page);
   await page.getByRole("button", { name: "Serviços", exact: true }).click();
@@ -78,7 +105,7 @@ test("client books without account, downloads calendar and cancels by private li
     path: "test-results/agenda-free-public-" + testInfo.project.name + ".png",
     fullPage: true,
   });
-  await page.getByRole("button", { name: "Confirmar meu horário" }).click();
+  await confirmBooking(page);
   await expect(
     page.getByRole("heading", { name: "Reserva confirmada" }),
   ).toBeVisible();

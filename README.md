@@ -66,3 +66,9 @@ Backend em src/modules/agenda; componentes em src/components; páginas/API em sr
 ## Licença
 
 MIT: permite estudar, modificar, utilizar comercialmente e redistribuir a base, preservando os avisos. Leia LICENSE. As condições de uma futura edição Pro serão tratadas separadamente para o código adicional. Os serviços externos têm seus próprios termos e custos.
+
+## Formatação e Windows
+
+Use npm run format para aplicar o padrão e npm run check para validar antes de enviar ao GitHub. Código e configuração usam LF por .gitattributes, inclusive em checkouts Windows; scripts nativos usam CRLF. Preserve .prettierrc.json, .prettierignore e .editorconfig no repositório e no pacote distribuído. Arquivos gerados pelo Next.js não são formatados manualmente.
+
+Os atalhos Windows seguem o mecanismo do Module FAQ e exibem falhas de inicialização. Extraia o ZIP inteiro antes de abri-los. Os testes incluem abertura nativa no Windows PowerShell 5.1; no Module Ads, também verificam e instalam em um aplicativo isolado.

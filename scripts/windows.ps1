@@ -1,6 +1,16 @@
-param([switch]$StopServer)
+param([switch]$StopServer, [switch]$SmokeTest)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
+if ($SmokeTest) {
+  $probe = New-Object Windows.Forms.Form
+  $probe.ShowInTaskbar = $false
+  $probe.Opacity = 0
+  $probe.Show()
+  [Windows.Forms.Application]::DoEvents()
+  $probe.Dispose()
+  Write-Output 'PASS: Agenda native startup.'
+  exit 0
+}
 $appRoot = Split-Path -Parent $PSScriptRoot
 $dataRoot = Join-Path $appRoot '.data'
 $pidPath = Join-Path $dataRoot 'local-server.json'
@@ -73,4 +83,5 @@ try {
 } catch {
   if ($note) { $note.Close() }
   [Windows.Forms.MessageBox]::Show($_.Exception.Message,'Agenda Free') | Out-Null
+  exit 1
 }
