@@ -16,4 +16,4 @@ next-env.d.ts
 AGENTS.md
 *.tsbuildinfo
 *.ps1
-*.vbs
+*.cmd

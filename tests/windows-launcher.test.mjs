@@ -1,3 +1,4 @@
+import { registerLauncherChecks } from "./windows-launcher-helper.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
@@ -10,19 +11,25 @@ const powershell = windows
       "System32/WindowsPowerShell/v1.0/powershell.exe",
     )
   : "";
-test("launcher uses FAQ-compatible visible GUI startup, STA and failure reporting", async () => {
-  for (const file of ["Iniciar Agenda.vbs", "Parar Agenda.vbs"]) {
+test("CMD launchers preserve quoted paths, visible diagnostics and exit codes", async () => {
+  for (const file of ["Iniciar Agenda.cmd", "Parar Agenda.cmd"]) {
     const text = await readFile(file, "utf8");
-    assert.match(text, /-STA/);
-    assert.match(text, /-WindowStyle Hidden/);
-    assert.match(text, /, 1, True/);
-    assert.match(text, /FileExists/);
-    assert.match(text, /result <> 0/);
-    assert.match(text, /SystemRoot/);
+    assert.match(text, /DisableDelayedExpansion/);
+    assert.match(text, /%~dp0/);
+    assert.match(text, /if not exist "%SCRIPT%"/);
+    assert.match(text, /-STA -ExecutionPolicy Bypass -File "%SCRIPT%"/);
+    assert.ok(text.includes("exit /b %EXIT_CODE%"));
+    assert.doesNotMatch(text, /WindowStyle Hidden|wscript|cscript|RunAs/i);
   }
 });
+
+registerLauncherChecks([
+  ["Iniciar Agenda", "scripts\\windows.ps1", ""],
+  ["Parar Agenda", "scripts\\windows.ps1", "-StopServer"],
+]);
+
 test(
-  "native Windows PowerShell 5.1 opens the interface without user data",
+  "native PowerShell opens the interface without operational data",
   { skip: !windows },
   async () => {
     for (const script of ["scripts/windows.ps1"]) {
@@ -31,8 +38,6 @@ test(
         [
           "-NoProfile",
           "-STA",
-          "-WindowStyle",
-          "Hidden",
           "-ExecutionPolicy",
           "Bypass",
           "-File",
